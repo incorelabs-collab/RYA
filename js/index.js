@@ -51,7 +51,7 @@ var app = {
         }
     },
     doOnlineTasks: function() {
-        var urlData = 'http://darpan.incorelabs.com/db_version.php';
+        var urlData = 'http://rya.incorelabs.com/db_version.php';
         if(localStorage.getItem('dbLocalVersion') == -1) {
             $.getJSON(urlData).done(app.checkWithLocalDB);
         } else {
@@ -85,25 +85,25 @@ var app = {
 
             app.requestStatus = [false, false, false, false, false, false, false];
 
-            $.getJSON('http://darpan.incorelabs.com/users.php', function(userData) {
+            $.getJSON('http://rya.incorelabs.com/users.php', function(userData) {
                 app.createTable(userData,"users",0);
             });
-            $.getJSON('http://darpan.incorelabs.com/male.php', function(maleData) {
+            $.getJSON('http://rya.incorelabs.com/male.php', function(maleData) {
                 app.createTable(maleData,"male",1);
             });
-            $.getJSON('http://darpan.incorelabs.com/female.php', function(femaleData) {
+            $.getJSON('http://rya.incorelabs.com/female.php', function(femaleData) {
                 app.createTable(femaleData,"female",2);
             });
-            $.getJSON('http://darpan.incorelabs.com/common.php', function(commonData) {
+            $.getJSON('http://rya.incorelabs.com/common.php', function(commonData) {
                 app.createTable(commonData,"common",3);
             });
-            $.getJSON('http://darpan.incorelabs.com/kids.php', function(kidsData) {
+            $.getJSON('http://rya.incorelabs.com/kids.php', function(kidsData) {
                 app.createTable(kidsData,"kids",4);
             });
-            $.getJSON('http://darpan.incorelabs.com/directors.php', function(directorsData) {
+            $.getJSON('http://rya.incorelabs.com/directors.php', function(directorsData) {
                 app.createTable(directorsData,"directors",5);
             });
-            $.getJSON('http://darpan.incorelabs.com/events.php', function(eventsData) {
+            $.getJSON('http://rya.incorelabs.com/events.php', function(eventsData) {
                 app.createTable(eventsData,"events",6);
             });
 
@@ -119,7 +119,7 @@ var app = {
         }
     },
     getImageAssets: function () {
-        var urlImages = 'http://darpan.incorelabs.com/images/file-list.php?key=kamlesh';
+        var urlImages = 'http://rya.incorelabs.com/images/file-list.php?key=kamlesh';
         var dirReference = app.getDirectoryReference();
         dirReference.done(function(imgDir) {
             app.imgDir = imgDir;

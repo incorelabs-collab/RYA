@@ -3,7 +3,7 @@ var pageHome = {
     initPush: function() {
         if (device.platform == 'android' || device.platform == 'Android') {
             pageHome.pushNotification.register(pageHome.successHandler, pageHome.errorHandler, {
-                "senderID" : "893688223674",
+                "senderID" : "368389705108",
                 "ecb" : "pageHome.onNotificationGCM"
             });
         } else {
@@ -19,7 +19,7 @@ var pageHome = {
         var pushToken = localStorage.getItem("pushToken");
         if(pushToken == null || pushToken != token) {
             $.ajax({
-                url: 'http://incorelabs.com/darpan/notification/register.php',
+                url: 'http://rya.incorelabs.com/notification/register.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {uid : localStorage.getItem("login_user_id"), regId : token, deviceType : '1'},
@@ -49,7 +49,7 @@ var pageHome = {
                     if(pushToken == null || pushToken != e.regid) {
                         // If the device has NOT registered or the device id has changed then only register again.
                         $.ajax({
-                            url: 'http://incorelabs.com/darpan/notification/register.php',
+                            url: 'http://rya.incorelabs.com/notification/register.php',
                             type: 'POST',
                             dataType: 'json',
                             data: {uid : localStorage.getItem("login_user_id"), regId : e.regid, deviceType : '0'},
@@ -83,9 +83,23 @@ var pageHome = {
     errorHandler: function(error) {
         alert("An ERROR has occurred while setting up PUSH notifications.");
     },
-    changePage : function(url) {
+    changePage: function(url) {
         app.setBackPage("home.html");
         app.displayPage(url);
+    },
+    launchAlbumsPage: function() {
+        if(app.isConnectionAvailable()) {
+            window.open("http://www.incorelabs.com/rya/event_img/", "_system");
+        } else {
+            navigator.notification.confirm("You don't have a working internet connection.", pageHome.onOfflineConfirm, 'Offline', ['Try Again','Dismiss']);
+        }
+    },
+    onOfflineConfirm: function(buttonIndex) {
+        if(buttonIndex == 1) {
+            pageHome.launchAlbumsPage();
+        } else {
+            return;
+        }
     }
 }
 
