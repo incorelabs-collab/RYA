@@ -7,13 +7,13 @@ var app = {
         if(localStorage.getItem('dbLocalVersion') == null) {
             localStorage.setItem('dbLocalVersion','-1');
         }
-        return openDatabase('dbDarpan', localStorage.getItem('dbLocalVersion'), 'dbDarpan', (5 * 1022 * 1022));
+        return openDatabase('dbRYA', localStorage.getItem('dbLocalVersion'), 'dbRYA', (5 * 1022 * 1022));
     })(),
     imgDb: (function() {
         if(localStorage.getItem('imgDbLocalVersion') == null) {
             localStorage.setItem('imgDbLocalVersion','-1');
         }
-        return openDatabase('imgDbDarpan', localStorage.getItem('imgDbLocalVersion'), 'imgDbDarpan', (5 * 1022 * 1022));
+        return openDatabase('imgDbRYA', localStorage.getItem('imgDbLocalVersion'), 'imgDbRYA', (5 * 1022 * 1022));
     })(),
     initialize: function() {
         document.addEventListener('deviceready', app.onDeviceReady, false);
@@ -31,6 +31,9 @@ var app = {
             $('#startup_splash').remove();
         }, 6000);
         if(app.imgDb.version == -1) {
+            localStorage.clear();
+            localStorage.setItem('dbLocalVersion','-1');
+            localStorage.setItem('imgDbLocalVersion','-1');
             app.imgDb.transaction(function (tx) {
                 tx.executeSql("CREATE TABLE IF NOT EXISTS profile_pic (filename TEXT NOT NULL, timestamp TEXT NOT NULL)",[],
                     function (tx, r) {
@@ -280,8 +283,10 @@ var app = {
         }
     },
     dbTxError: function (error) {
+        console.log(error);
     },
     dbQueryError: function(tx, error) {
+        console.log(error);
     },
     validateRequest: function(element, index, array) {
         return (element == true);
