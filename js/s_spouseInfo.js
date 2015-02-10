@@ -1,4 +1,4 @@
-var pageParentInfo = {
+var pageSenatorSpouseInfo = {
     checkImage: function(userId) {
         var img = new Image();
         img.onload = function() {
@@ -12,24 +12,13 @@ var pageParentInfo = {
         var imgURL = localStorage.getItem("imgDir")+userId+".jpg";
         img.src = imgURL;  // fires off loading of image
     },
-    getSpousePage: function(id) {
-        app.setBackPage("parentInfo.html");
-        localStorage.setItem("spouse_id", id);
-        if(id % 2 == 0) {
-            localStorage.setItem("spouse_sex", "F");
-        }
-        else {
-            localStorage.setItem("spouse_sex", "M");
-        }
-        app.displayPage("spouseInfo.html");
-    },
     getKidsModal: function (id) {
         $("#kidsHeader").empty();
         $("#kidsBody").empty();
         var kidsHeaderString = "";
         var kidsBodyString = "";
         app.db.transaction(function (tx) {
-            var buildKidsColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name ='kids'";
+            var buildKidsColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name ='s_kids'";
             tx.executeSql(buildKidsColumnNameQuery, [],
                 function(tx, r) {
                     var columnParts = r.rows.item(0).sql.replace(/^[^\(]+\(([^\)]+)\)/g, '$1').split(', ');
@@ -39,7 +28,7 @@ var pageParentInfo = {
                             kidsColumnNames.push(columnParts[i].split(" ")[0]);
                     }
                     kidsColumnNames = kidsColumnNames.slice(2, kidsColumnNames.length).toString();
-                    var buildKidsDataQuery = "SELECT "+kidsColumnNames+" FROM kids WHERE id="+id;
+                    var buildKidsDataQuery = "SELECT "+kidsColumnNames+" FROM s_kids WHERE id="+id;
                     tx.executeSql(buildKidsDataQuery, [],
                         function(tx, r) {
                             var kidsData = r.rows.item(0);
@@ -84,7 +73,7 @@ var pageParentInfo = {
     }
 };
 $(document).ready(function() {
-    app.setCurrentPage("parentInfo.html");
+    app.setCurrentPage("s_spouseInfo.html");
     var parentHeaderString = "";
     var parentBodyString = "";
     var kidsOnParentString = "";
@@ -94,17 +83,17 @@ $(document).ready(function() {
         var spouseUserId;
         var userTableName;
         var spouseTableName;
-        var userId = parseInt(localStorage.getItem("user_id"));
-        var userSex = localStorage.getItem("user_sex");
+        var userId = parseInt(localStorage.getItem("spouse_id"));
+        var userSex = localStorage.getItem("spouse_sex");
         if(userSex == "M") {
-            userTableName = "male";
-            spouseTableName = "female";
+            userTableName = "s_male";
+            spouseTableName = "s_female";
             spouseUserId = userId + 1;
             commonMaleId = userId;
         }
         else {
-            userTableName = "female";
-            spouseTableName = "male";
+            userTableName = "s_female";
+            spouseTableName = "s_male";
             spouseUserId = userId - 1;
             commonMaleId = userId - 1;
         }
@@ -126,7 +115,7 @@ $(document).ready(function() {
                         tx.executeSql(buildSpouseNameQuery, [],
                             function(tx, r) {
                                 var spouseName = r.rows.item(0).Name;
-                                var buildCommonColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name = 'common'";
+                                var buildCommonColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name = 's_common'";
                                 tx.executeSql(buildCommonColumnNameQuery, [],
                                     function(tx, r) {
                                         var columnParts = r.rows.item(0).sql.replace(/^[^\(]+\(([^\)]+)\)/g, '$1').split(', ');
@@ -136,22 +125,22 @@ $(document).ready(function() {
                                                 commonColumnNames.push(columnParts[i].split(" ")[0]);
                                         }
                                         commonColumnNames = commonColumnNames.slice(1,(commonColumnNames.length-2)).toString();
-                                        var buildCommonDataQuery = "SELECT "+commonColumnNames+" FROM common WHERE id="+ commonMaleId;
+                                        var buildCommonDataQuery = "SELECT "+commonColumnNames+" FROM s_common WHERE id="+ commonMaleId;
                                         tx.executeSql(buildCommonDataQuery, [],
                                             function(tx, r) {
                                                 var commonData = r.rows.item(0);
-                                                var buildKidsNameQuery = "SELECT id, Name FROM kids WHERE parent_id="+commonMaleId;
+                                                var buildKidsNameQuery = "SELECT id, Name FROM s_kids WHERE parent_id="+commonMaleId;
                                                 tx.executeSql(buildKidsNameQuery, [],
                                                     function(tx, r) {
                                                         if(r.rows.length > 0) {
                                                             kidsOnParentString += "<div class='container-fluid listItems bg-primary otherDetail'><div class='col-xs-12 col-sm-12 pull-left'><h3>Kids</h3></div></div>";
                                                             for(var i =0;i< r.rows.length; i++) {
-                                                                kidsOnParentString += "<div class='container detailContent'><div class='row'><a onclick='pageParentInfo.getKidsModal("+r.rows.item(i).id+")'><div class='col-xs-4'><img src='img/customer.png' class='thumbnail'></div><div class='col-xs-8'><div class='detailKidName'>"+r.rows.item(i).Name+"</div></div></a></div></div>";
+                                                                kidsOnParentString += "<div class='container detailContent'><div class='row'><a onclick='pageSenatorSpouseInfo.getKidsModal("+r.rows.item(i).id+")'><div class='col-xs-4'><img src='img/customer.png' class='thumbnail'></div><div class='col-xs-8'><div class='detailKidName'>"+r.rows.item(i).Name+"</div></div></a></div></div>";
                                                             }
                                                             $("#kidsOnParent").append(kidsOnParentString);
                                                         }
                                                         if(userData.has_partner == 1) {
-                                                            parentBodyString += "<div class='row listItems'><a onclick='pageParentInfo.getSpousePage("+spouseUserId+")'><div class='col-xs-10 col-sm-11 pull-left'><h4 class='spouseInfoTitleLabel'>Spouse</h4><h5 class='spouseInfoTitleDetail'>"+spouseName+"</h5></div><div class='col-xs-2 col-sm-1 pull-right'><span class='glyphicon glyphicon-chevron-right Icon'></span></div></a></div>";
+                                                            parentBodyString += "<div class='row listItems'><div class='col-xs-10 col-sm-11 pull-left'><h4 class='spouseInfoTitleLabel'>Spouse</h4><h5 class='spouseInfoTitleDetail'>"+spouseName+"</h5></div><div class='col-xs-2 col-sm-1 pull-right'><span class='glyphicon glyphicon-user Icon'></span></div></div>";
                                                             parentBodyString += "<div class='row listItems'><div class='col-xs-10 col-sm-11 pull-left'><h4 class='infoTitleLabel'>Date of Marriage</h4><h5 class='infoTitleDetail'>"+commonData.DOM+"</h5></div><div class='col-xs-2 col-sm-1 pull-right'><span class='glyphicon glyphicon-heart Icon'></span></div></div>";
                                                         }
                                                         $.each(userData, function(index, val) {
@@ -235,7 +224,7 @@ $(document).ready(function() {
                                                         parentHeaderString += "</div></div>";
                                                         $("#parentHeader").append(parentHeaderString);
                                                         $("#parentBody").append(parentBodyString);
-                                                        pageParentInfo.checkImage(commonMaleId);
+                                                        pageSenatorSpouseInfo.checkImage(commonMaleId);
                                                         $("[data-toggle='popover']").popover();
                                                         parentHeaderString = "";
                                                         parentBodyString = "";

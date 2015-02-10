@@ -86,7 +86,7 @@ var app = {
 
             localStorage.setItem('dbCurrentOnline',json[0][0]);
 
-            app.requestStatus = [false, false, false, false, false, false, false];
+            app.requestStatus = [false, false, false, false, false, false, false, false, false, false, false];
 
             $.getJSON('http://rya.incorelabs.com/users.php', function(userData) {
                 app.createTable(userData,"users",0);
@@ -109,6 +109,19 @@ var app = {
             $.getJSON('http://rya.incorelabs.com/events.php', function(eventsData) {
                 app.createTable(eventsData,"events",6);
             });
+            $.getJSON('http://rya.incorelabs.com/s_male.php', function(s_MaleData) {
+                app.createTable(s_MaleData,"s_male",7);
+            });
+            $.getJSON('http://rya.incorelabs.com/s_female.php', function(s_FemaleData) {
+                app.createTable(s_FemaleData,"s_female",8);
+            });
+            $.getJSON('http://rya.incorelabs.com/s_kids.php', function(s_KidsData) {
+                app.createTable(s_KidsData,"s_kids",9);
+            });
+            $.getJSON('http://rya.incorelabs.com/s_common.php', function(s_CommonData) {
+                app.createTable(s_CommonData,"s_common",10);
+            });
+
 
         } else {
             // Internet BUT Data is Up to Date.
