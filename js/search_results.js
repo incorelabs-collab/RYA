@@ -1,17 +1,6 @@
 var pageSearchResults = {
     imgError: function(source) {
         source.src = "img/customer.png";
-        if($(source).parent().hasClass('memberImgData')) {
-            $(source).parent().removeClass("col-xs-6");
-            $(source).parent().addClass("col-xs-5");
-            $(source).parent().next().removeClass("col-xs-6 coupleData");
-            $(source).parent().next().addClass("col-xs-7");
-        } else {
-            $(source).parent().removeClass("col-xs-6");
-            $(source).parent().addClass("col-xs-5");
-            $(source).parent().next().removeClass("col-xs-6 singleData");
-            $(source).parent().next().addClass("col-xs-7 noData");
-        }
     },
     getParentPage: function (id) {
         app.setBackPage("search_results.html");
@@ -85,6 +74,11 @@ var pageSearchResults = {
     }
 }
 $(document).ready(function() {
-    $(".homeContent").append(localStorage.getItem("searchData"));
+    $("#searchMaleData").append(localStorage.getItem("maleResultsData"));
+    $("#searchFemaleData").append(localStorage.getItem("femaleResultsData"));
+    $("#searchKidsData").append(localStorage.getItem("kidsResultsData"));
+    $("#searchSMaleData").append(localStorage.getItem("sMaleResultsData"));
+    $("#searchSFemaleData").append(localStorage.getItem("sFemaleResultsData"));
+    $("#searchSKidsData").append(localStorage.getItem("sKidsResultsData"));
     $('body').removeClass();
 });

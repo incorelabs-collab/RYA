@@ -378,3 +378,21 @@ span.Icon {
 .panel-group {
     font-size: large;
 }
+
+/* Search Page */
+.searchBlock {
+    border-style: outset;
+    border-radius: 1.5em;
+    border-top-color: #e7e7e7;
+    border-left-color: #e7e7e7;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
+    margin-left: 0em;
+    margin-right: 0em;
+}
+
+.searchHeaderFont {
+    font-size: x-large;
+}

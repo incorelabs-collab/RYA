@@ -173,6 +173,7 @@ var searchMiniApp = {
                     console.log("s_male", sMaleResults.id, sMaleResults.name);
                     console.log("s_female", sFemaleResults.id, sFemaleResults.name);
                     console.log("s_kids", sKidsResults.id, sKidsResults.name);
+                    searchMiniApp.buildSearchResults(maleResults, femaleResults, kidsResults, sMaleResults, sFemaleResults, sKidsResults);
                 });
             } else {
                 $.when(defMale, defSMale, defFemale, defSFemale).done(function() {
@@ -183,79 +184,79 @@ var searchMiniApp = {
                     console.log("s_male", sMaleResults.id, sMaleResults.name);
                     console.log("s_female", sFemaleResults.id, sFemaleResults.name);
                     console.log("s_kids", sKidsResults.id, sKidsResults.name);
+                    searchMiniApp.buildSearchResults(maleResults, femaleResults, kidsResults, sMaleResults, sFemaleResults, sKidsResults);
                 });
 
             }
         });
-        /*app.db.transaction(function (tx) {
-            tx.executeSql(queryString[0], [],
-                function(tx, r) {
-                    for(var j =0; j< r.rows.length; j++) {
-                        resultsID[k] = r.rows.item(j).id;
-                        resultsName[k] = r.rows.item(j).Name;
-                        k++;
-                    }
-                    app.db.transaction(function (tx) {
-                        tx.executeSql(queryString[1], [],
-                            function(tx, r) {
-                                for(var j =0; j< r.rows.length; j++) {
-                                    resultsID[k] = r.rows.item(j).id;
-                                    resultsName[k] = r.rows.item(j).Name;
-                                    k++;
-                                }
-                                if(queryString.length == 3) {               // Kids Data
-                                    app.db.transaction(function (tx) {
-                                        tx.executeSql(queryString[2], [],
-                                            function(tx, r) {
-                                                for(var j =0; j< r.rows.length; j++) {
-                                                    resultsID[k] = r.rows.item(j).id;
-                                                    resultsName[k] = r.rows.item(j).Name;
-                                                    k++;
-                                                }
-                                                searchMiniApp.buildSearchResults(k, resultsID, resultsName);
-                                            },
-                                            app.dbQueryError
-                                        );
-                                    });
-                                } else {
-                                    searchMiniApp.buildSearchResults(k, resultsID, resultsName);
-                                }
-                            },
-                            app.dbQueryError
-                        );
-                    });
-                },
-                app.dbQueryError
-            );
-        });*/
     },
-    buildSearchResults: function (k, resultsID, resultsName) {
-        var searchConcatString = "";
+    buildSearchResults: function (maleResults, femaleResults, kidsResults, sMaleResults, sFemaleResults, sKidsResults) {
         var imgDir = localStorage.getItem("imgDir");
-        if(k>0) {
-            for(var i=0;i<k;i++) {
-                // If you subtract 10000 from the id and yields a positive result then it is a kid else parent.
-                if((resultsID[i] - 10000) > 0) {
-                    searchConcatString += "<div class='row singleMemberImgAndData'><div class='col-xs-6 singleMemberImgData'><img src='"+imgDir+resultsID[i]+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div><div class='col-xs-6 singleData'>";
-                    searchConcatString += "<a onclick='pageSearchResults.getKidsModal("+resultsID[i]+")' class='memberLink'><span>"+resultsName[i]+"</span></a></div></div><br/>";
-                } else {
-                    var imgId = resultsID[i];
-                    if(resultsID[i] % 2 == 0) {
-                        imgId = imgId - 1;
-                    }
-                    searchConcatString += "<div class='row singleMemberImgAndData'><div class='col-xs-6 singleMemberImgData'><img src='"+imgDir+imgId+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div><div class='col-xs-6 singleData'>";
-                    searchConcatString += "<a onclick='pageSearchResults.getParentPage("+resultsID[i]+")' class='memberLink'><span>"+resultsName[i]+"</span></a></div></div><br/>";
-                }
+        
+        if(maleResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=maleResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+maleResults.id[i]+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getParentPage("+maleResults.id[i]+")' class='memberLink'><span>"+maleResults.name[i]+"</span></a></div></div></div>";
             }
+            localStorage.setItem("maleResultsData", resultHTML);
         } else {
-            searchConcatString = "<div><h2>NO RESULTS FOUND !! </h2></div>"
+            localStorage.setItem("maleResultsData", "<div><h4>No male members with the specified search criteria.</h4></div>");
         }
+
+        if(femaleResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=femaleResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+(femaleResults.id[i]-1)+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getParentPage("+femaleResults.id[i]+")' class='memberLink'><span>"+femaleResults.name[i]+"</span></a></div></div></div>";
+            }
+            localStorage.setItem("femaleResultsData", resultHTML);
+        } else {
+            localStorage.setItem("femaleResultsData", "<div><h4>No female members with the specified search criteria.</h4></div>");
+        }
+
+        if(kidsResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=kidsResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+kidsResults.id[i]+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getKidsModal("+kidsResults.id[i]+")' class='memberLink'><span>"+kidsResults.name[i]+"</span></a></div></div></div>";
+            }
+            localStorage.setItem("kidsResultsData", resultHTML);
+        } else {
+            localStorage.setItem("kidsResultsData", "<div><h4>No kids with the specified search criteria.</h4></div>");
+        }
+
+        if(sMaleResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=sMaleResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+sMaleResults.id[i]+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getParentPage("+sMaleResults.id[i]+")' class='memberLink'><span>"+sMaleResults.name[i]+"</span></a></div></div></div>";
+            }
+            localStorage.setItem("sMaleResultsData", resultHTML);
+        } else {
+            localStorage.setItem("sMaleResultsData", "<div><h4>No senator male members with the specified search criteria.</h4></div>");
+        }
+
+        if(sFemaleResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=sFemaleResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+(sFemaleResults.id[i]-1)+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getParentPage("+sFemaleResults.id[i]+")' class='memberLink'><span>"+sFemaleResults.name[i]+"</span></a></div></div></div>";
+            }
+            localStorage.setItem("sFemaleResultsData", resultHTML);
+        } else {
+            localStorage.setItem("sFemaleResultsData", "<div><h4>No senator female members with the specified search criteria.</h4></div>");
+        }
+
+        if(sKidsResults.id.length > 0) {
+            var resultHTML = "";
+            for(var i=0, dataLength=sKidsResults.id.length; i<dataLength; i++) {
+                resultHTML += "<br/><div class='searchBlock'><div class='row'><div class='col-xs-10 col-xs-offset-1'><img src='"+imgDir+sKidsResults.id[i]+".jpg' class='img-responsive' onerror='pageSearchResults.imgError(this)'></div></div><br/><div class='row'><div class='col-xs-12'><a onclick='pageSearchResults.getKidsModal("+sKidsResults.id[i]+")' class='memberLink'><span>"+sKidsResults.name[i]+"</span></a></div></div></div>";
+            }
+            localStorage.setItem("sKidsResultsData", resultHTML);
+        } else {
+            localStorage.setItem("sKidsResultsData", "<div><h4>No senator kids with the specified search criteria.</h4></div>");
+        }
+        
         app.setBackPage(app.getCurrentPage());
         $('#searchModal').modal('hide');
-        localStorage.setItem("searchData", searchConcatString);
         setTimeout(function () {
             app.displayPage("search_results.html");
         },100);
-        searchConcatString = "";
     }
 }
