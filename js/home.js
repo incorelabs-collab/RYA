@@ -89,7 +89,11 @@ var pageHome = {
     },
     launchAlbumsPage: function() {
         if(app.isConnectionAvailable()) {
-            window.open("http://www.incorelabs.com/rya/event_img/", "_system");
+            if (device.platform == 'android' || device.platform == 'Android') {
+                window.open("http://rya.incorelabs.com/gallery/index.php", "_blank","location=no");
+            } else {
+                window.open("http://rya.incorelabs.com/gallery/index.php", "_blank","location=no,closebuttoncaption=Close");
+            }
         } else {
             navigator.notification.confirm("You don't have a working internet connection.", pageHome.onOfflineConfirm, 'Offline', ['Try Again','Dismiss']);
         }
