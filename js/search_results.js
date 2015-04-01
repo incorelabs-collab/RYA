@@ -82,3 +82,6 @@ $(document).ready(function() {
     $("#searchSKidsData").append(localStorage.getItem("sKidsResultsData"));
     $('body').removeClass();
 });
+$('#searchData').on('shown.bs.collapse', function () {
+    $('html, body').animate({scrollTop : 0}, 0);
+});
