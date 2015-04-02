@@ -28,7 +28,6 @@ var pageHome = {
                     // TODO : Add functionality to check if the registration was successful for Apple iOS.
                 },
                 error: function(error) {
-                    alert(error);
                 }
             });
         }
@@ -58,7 +57,6 @@ var pageHome = {
                                 // TODO : Add functionality to check if the registration was successful for Google Android.
                             },
                             error: function(error) {
-                                alert(error);
                             }
                         });
                     }
