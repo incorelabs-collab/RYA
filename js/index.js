@@ -3,22 +3,26 @@ var app = {
     imgDir: {},
     backLog: [],
     backURL: "",
-    db: (function() {
+    db: {},
+    imgDb: {},
+    getAppDb: function() {
         if(localStorage.getItem('dbLocalVersion') == null) {
             localStorage.setItem('dbLocalVersion','-1');
         }
         return openDatabase('dbRYA', localStorage.getItem('dbLocalVersion'), 'dbRYA', (5 * 1022 * 1022));
-    })(),
-    imgDb: (function() {
+    },
+    getImgDb: function() {
         if(localStorage.getItem('imgDbLocalVersion') == null) {
             localStorage.setItem('imgDbLocalVersion','-1');
         }
         return openDatabase('imgDbRYA', localStorage.getItem('imgDbLocalVersion'), 'imgDbRYA', (5 * 1022 * 1022));
-    })(),
+    },
     initialize: function() {
         document.addEventListener('deviceready', app.onDeviceReady, false);
     },
     onDeviceReady: function() {
+        app.db = app.getAppDb();
+        app.imgDb = app.getImgDb();
         navigator.splashscreen.show();
         document.addEventListener('backbutton', app.onBackKeyDown, false);
         localStorage.removeItem('backLog');
@@ -31,9 +35,6 @@ var app = {
             $('#startup_splash').remove();
         }, 6000);
         if(app.imgDb.version == -1) {
-            localStorage.clear();
-            localStorage.setItem('dbLocalVersion','-1');
-            localStorage.setItem('imgDbLocalVersion','-1');
             app.imgDb.transaction(function (tx) {
                 tx.executeSql("CREATE TABLE IF NOT EXISTS profile_pic (filename TEXT NOT NULL, timestamp TEXT NOT NULL)",[],
                     function (tx, r) {
