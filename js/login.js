@@ -6,7 +6,7 @@ var pageLogin = {
             var buildUserValidateQuery = "SELECT COUNT(user_id) count, user_id FROM users WHERE username='"+user_name_value+"' AND password='"+password_value+"'";
             tx.executeSql(buildUserValidateQuery, [], function (tx, r) {
                 if(r.rows.item(0).count < 1) {
-                    alert("Wrong Credentials");
+                    navigator.notification.alert("The username or password do not match", app.alertDismissed, "Wrong Credentials", "Try Again");
                     $("#username").val("");
                     $("#password").val("");
                 }
