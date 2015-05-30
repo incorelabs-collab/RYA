@@ -2,7 +2,7 @@ var pageSearchResults = {
     imgError: function(source) {
         source.src = "img/customer.png";
     },
-    getParentPage: function (id) {
+    getParentPage: function (id, parentType) {
         app.setBackPage("search_results.html");
         localStorage.setItem("user_id", id);
         if(id % 2 == 0) {
@@ -11,15 +11,23 @@ var pageSearchResults = {
         else {
             localStorage.setItem("user_sex", "M");
         }
-        app.displayPage("parentInfo.html");
+        var parentPageType = "parentInfo.html";
+        if(parentType == 1) {
+            parentPageType = "s_parentInfo.html";
+        }
+        app.displayPage(parentPageType);
     },
-    getKidsModal: function (id) {
+    getKidsModal: function (id, kidType) {
         $("#kidsHeader").empty();
         $("#kidsBody").empty();
+        var kidsTableName = "kids";
+        if(kidType == 1) {
+            kidsTableName = "s_kids";
+        }
         var kidsHeaderString = "";
         var kidsBodyString = "";
         app.db.transaction(function (tx) {
-            var buildKidsColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name ='kids'";
+            var buildKidsColumnNameQuery = "SELECT sql FROM sqlite_master WHERE type='table' AND name ='"+kidsTableName+"'";
             tx.executeSql(buildKidsColumnNameQuery, [],
                 function(tx, r) {
                     var columnParts = r.rows.item(0).sql.replace(/^[^\(]+\(([^\)]+)\)/g, '$1').split(', ');
@@ -29,7 +37,7 @@ var pageSearchResults = {
                             kidsColumnNames.push(columnParts[i].split(" ")[0]);
                     }
                     kidsColumnNames = kidsColumnNames.slice(2, kidsColumnNames.length).toString();
-                    var buildKidsDataQuery = "SELECT "+kidsColumnNames+" FROM kids WHERE id="+id;
+                    var buildKidsDataQuery = "SELECT "+kidsColumnNames+" FROM "+kidsTableName+" WHERE id="+id;
                     tx.executeSql(buildKidsDataQuery, [],
                         function(tx, r) {
                             var kidsData = r.rows.item(0);
@@ -59,9 +67,6 @@ var pageSearchResults = {
                             $("#kidsHeader").append(kidsHeaderString);
                             $("#kidsBody").append(kidsBodyString);
                             $('#kidsModal').modal('show');
-                            $('#kidsModal').on('shown.bs.modal', function (e) {
-                                $("[data-toggle='popover']").popover();
-                            });
                             kidsHeaderString = "";
                             kidsBodyString = "";
                         },
@@ -75,13 +80,31 @@ var pageSearchResults = {
 }
 $(document).ready(function() {
     $("#searchMaleData").append(localStorage.getItem("maleResultsData"));
+    $("#maleResultsCount").text(localStorage.getItem("maleResultsCount"));
     $("#searchFemaleData").append(localStorage.getItem("femaleResultsData"));
+    $("#femaleResultsCount").text(localStorage.getItem("femaleResultsCount"));
     $("#searchKidsData").append(localStorage.getItem("kidsResultsData"));
+    $("#kidsResultsCount").text(localStorage.getItem("kidsResultsCount"));
     $("#searchSMaleData").append(localStorage.getItem("sMaleResultsData"));
+    $("#sMaleResultsCount").text(localStorage.getItem("sMaleResultsCount"));
     $("#searchSFemaleData").append(localStorage.getItem("sFemaleResultsData"));
+    $("#sFemaleResultsCount").text(localStorage.getItem("sFemaleResultsCount"));
     $("#searchSKidsData").append(localStorage.getItem("sKidsResultsData"));
+    $("#sKidsResultsCount").text(localStorage.getItem("sKidsResultsCount"));
     $('body').removeClass();
+    $('#kidsModal').on('shown.bs.modal', function (e) {
+        $("[data-toggle='popover']").popover();
+    });
 });
 $('#searchData').on('shown.bs.collapse', function () {
     $('html, body').animate({scrollTop : 0}, 0);
+});
+$('body').on('click', function (e) {
+    $('[data-toggle="popover"]').each(function () {
+        //the 'is' for buttons that trigger popups
+        //the 'has' for icons within a button that triggers a popup
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+        }
+    });
 });

@@ -386,3 +386,7 @@ span.Icon {
 .searchHeaderFont {
     font-size: x-large;
 }
+
+.searchResultsCount {
+    margin-top: 0.3em;
+}
