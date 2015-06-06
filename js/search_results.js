@@ -76,6 +76,10 @@ var pageSearchResults = {
                 app.dbQueryError
             );
         });
+    },
+    closeKidsModal: function() {
+        $('#kidsModal').modal('hide');
+        localStorage.removeItem("openModal");
     }
 }
 $(document).ready(function() {
@@ -93,6 +97,7 @@ $(document).ready(function() {
     $("#sKidsResultsCount").text(localStorage.getItem("sKidsResultsCount"));
     $('body').removeClass();
     $('#kidsModal').on('shown.bs.modal', function (e) {
+        localStorage.setItem("openModal","#kidsModal");
         $("[data-toggle='popover']").popover();
     });
 });
