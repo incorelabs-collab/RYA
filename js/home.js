@@ -112,7 +112,7 @@ var pageHome = {
                     }
                     navigator.notification.confirm("Would you like to Try Again ?", pageHome.onGalleryConfirm, 'Try Again', ['Retry','Cancel']);
                 }
-            }, 15000);
+            }, 25000);
         } else {
             navigator.notification.confirm("You don't have a working internet connection.", pageHome.onGalleryConfirm, 'Offline', ['Try Again','Dismiss']);
         }
